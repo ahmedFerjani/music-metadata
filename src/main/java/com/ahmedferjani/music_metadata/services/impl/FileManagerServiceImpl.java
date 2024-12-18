@@ -1,5 +1,6 @@
-package com.ahmedferjani.music_metadata.services;
+package com.ahmedferjani.music_metadata.services.impl;
 
+import com.ahmedferjani.music_metadata.services.FileManagerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;

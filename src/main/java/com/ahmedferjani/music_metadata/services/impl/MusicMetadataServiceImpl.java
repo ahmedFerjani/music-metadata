@@ -1,7 +1,6 @@
-package com.ahmedferjani.music_metadata.services;
+package com.ahmedferjani.music_metadata.services.impl;
 
 import com.ahmedferjani.music_metadata.client.GeniusReactiveClient;
-import com.ahmedferjani.music_metadata.client.POJO.songsAPI.MediaResult;
 import com.ahmedferjani.music_metadata.domain.dto.MediaDTO;
 import com.ahmedferjani.music_metadata.domain.dto.SongDTO;
 import com.ahmedferjani.music_metadata.domain.entities.Media;
@@ -9,6 +8,9 @@ import com.ahmedferjani.music_metadata.domain.entities.SearchTerm;
 import com.ahmedferjani.music_metadata.domain.entities.Song;
 import com.ahmedferjani.music_metadata.mappers.MediaMapper;
 import com.ahmedferjani.music_metadata.mappers.SongMapper;
+import com.ahmedferjani.music_metadata.services.MediaProcessingService;
+import com.ahmedferjani.music_metadata.services.MusicDataIntegrationService;
+import com.ahmedferjani.music_metadata.services.MusicMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -20,17 +22,17 @@ import java.util.Optional;
 @Service
 public class MusicMetadataServiceImpl implements MusicMetadataService {
 
-    public static final List<String> ALLOWED_PLATFORMS = List.of("youtube", "spotify");
-
     private final GeniusReactiveClient geniusReactiveClient;
     private final MusicDataIntegrationService musicDataIntegration;
+    private final MediaProcessingService mediaProcessingService;
     private final MediaMapper mediaMapper;
     private final SongMapper songMapper;
 
     @Autowired
-    public MusicMetadataServiceImpl(GeniusReactiveClient geniusReactiveClient, MusicDataIntegrationService musicDataIntegration, MediaMapper mediaMapper, SongMapper songMapper) {
+    public MusicMetadataServiceImpl(GeniusReactiveClient geniusReactiveClient, MusicDataIntegrationService musicDataIntegration, MediaProcessingService mediaProcessingService, MediaMapper mediaMapper, SongMapper songMapper) {
         this.geniusReactiveClient = geniusReactiveClient;
         this.musicDataIntegration = musicDataIntegration;
+        this.mediaProcessingService = mediaProcessingService;
         this.mediaMapper = mediaMapper;
         this.songMapper = songMapper;
     }
@@ -63,36 +65,12 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
                                 Song song = musicDataIntegration.saveSong(hit, searchTerm);
                                 savedSongIds.add(song.getId());
 
-                                this.processMedia(song);
+                                mediaProcessingService.processMedia(song);
                             });
+
                     return Mono.just(savedSongIds);
+                }).doOnError(error -> {
+                    System.err.println("[MusicMetadataService] Error: " + error.getMessage());
                 });
     }
-
-    private void processMedia(Song song) {
-        // Retrieving the media of a song by performing another API call
-        geniusReactiveClient.getSongDetails(song.getId())
-                .flatMap(songDetails -> {
-                    songDetails.getResponse().getSong().getMedia()
-                            .stream()
-                            .filter(this::checkMediaResult)
-                            .forEach(mediaResult -> {
-                                musicDataIntegration.saveMedia(mediaResult, song);
-                            });
-                    return Mono.empty();
-                }).subscribe();
-    }
-
-    /**
-     * Define criteria of media acceptance
-     *
-     * @param mediaResult processed data
-     * @return check result indicating the acceptance of defined criteria
-     */
-    private boolean checkMediaResult(MediaResult mediaResult) {
-        String platform = mediaResult.getProvider();
-
-        return ALLOWED_PLATFORMS.contains(platform);
-    }
-
 }

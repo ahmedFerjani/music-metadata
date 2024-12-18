@@ -20,6 +20,6 @@ public class HitResult {
     @JsonProperty("release_date_components")
     private ReleaseDateComponents releaseDateComponents;
 
-    @JsonProperty("header_image_url")
-    private String headerImageUrl;
+    @JsonProperty("header_image_thumbnail_url")
+    private String headerImageThumbnailUrl;
 }
