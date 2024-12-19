@@ -10,14 +10,6 @@ public interface SongMapper {
     /**
      * Converts a {@link SongDTO} object into a {@link Song} entity.
      *
-     * @param songDTO the {@link SongDTO} to convert
-     * @return the corresponding {@link Song} entity
-     */
-    Song toEntity(SongDTO songDTO);
-
-    /**
-     * Converts a {@link SongDTO} object into a {@link Song} entity.
-     *
      * @param song the {@link SongDTO} to convert
      * @return the corresponding {@link Song} entity
      */

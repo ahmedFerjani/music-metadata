@@ -3,6 +3,7 @@ package com.ahmedferjani.music_metadata.services;
 
 import com.ahmedferjani.music_metadata.domain.dto.MediaDTO;
 import com.ahmedferjani.music_metadata.domain.dto.SongDTO;
+import com.ahmedferjani.music_metadata.domain.dto.SongIdsDTO;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public interface MusicMetadataService {
      * - Stores up to 10 songs in the database, including their metadata, associated media and cover photo.
      *
      * @param query the search term used to fetch songs
-     * @return a {@link Mono} emitting a {@link List} of song IDs that were successfully stored
+     * @return a {@link Mono} list of song IDs that were successfully stored
      */
-    Mono<List<Long>> storeSongs(String query);
+    Mono<SongIdsDTO> storeSongs(String query);
 }

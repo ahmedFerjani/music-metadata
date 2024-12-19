@@ -3,6 +3,7 @@ package com.ahmedferjani.music_metadata.services.impl;
 import com.ahmedferjani.music_metadata.client.GeniusReactiveClient;
 import com.ahmedferjani.music_metadata.domain.dto.MediaDTO;
 import com.ahmedferjani.music_metadata.domain.dto.SongDTO;
+import com.ahmedferjani.music_metadata.domain.dto.SongIdsDTO;
 import com.ahmedferjani.music_metadata.domain.entities.Media;
 import com.ahmedferjani.music_metadata.domain.entities.SearchTerm;
 import com.ahmedferjani.music_metadata.domain.entities.Song;
@@ -52,7 +53,7 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
     }
 
     @Override
-    public Mono<List<Long>> storeSongs(String query) {
+    public Mono<SongIdsDTO> storeSongs(String query) {
         SearchTerm searchTerm = musicDataIntegration.saveSearchTerm(query);
         List<Long> savedSongIds = new ArrayList<>();
 
@@ -68,7 +69,7 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
                                 mediaProcessingService.processMedia(song);
                             });
 
-                    return Mono.just(savedSongIds);
+                    return Mono.just(new SongIdsDTO(savedSongIds));
                 }).doOnError(error -> {
                     System.err.println("[MusicMetadataService] Error: " + error.getMessage());
                 });

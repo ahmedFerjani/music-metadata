@@ -9,14 +9,6 @@ import org.mapstruct.MappingConstants;
 public interface MediaMapper {
 
     /**
-     * Converts a {@link MediaDTO} object into a {@link Media} entity.
-     *
-     * @param mediaDTO the {@link MediaDTO} to convert
-     * @return the corresponding {@link Media} entity
-     */
-    Media toEntity(MediaDTO mediaDTO);
-
-    /**
      * Converts a {@link Media} object into a {@link Media} entity.
      *
      * @param media the {@link Media} to convert
