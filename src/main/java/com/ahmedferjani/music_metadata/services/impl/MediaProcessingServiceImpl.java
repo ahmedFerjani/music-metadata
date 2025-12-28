@@ -20,7 +20,7 @@ public class MediaProcessingServiceImpl implements MediaProcessingService {
 
     @Autowired
     public MediaProcessingServiceImpl(GeniusReactiveClient geniusReactiveClient,
-                                      MusicDataIntegrationService musicDataIntegration) {
+            MusicDataIntegrationService musicDataIntegration) {
         this.geniusReactiveClient = geniusReactiveClient;
         this.musicDataIntegration = musicDataIntegration;
     }
