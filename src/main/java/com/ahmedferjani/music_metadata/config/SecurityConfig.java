@@ -15,14 +15,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/oauth2/**").permitAll()  // Allow Swagger and OAuth2 endpoints
-                        .requestMatchers("/code-challenge/**").authenticated()  // Protect API endpoints
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("/swagger-ui/index.html", true)  // Redirect to Swagger UI on successful login
-                );  // Enable OAuth2 login
+                .csrf(AbstractHttpConfigurer::disable);
+
+        // // uncomment bellow to enable github oauth2 login
+        // .authorizeHttpRequests(auth -> auth
+        // .requestMatchers("/swagger-ui/**", "/v3/api-docs/**",
+        // "/oauth2/**").permitAll()
+        // .requestMatchers("/code-challenge/**").authenticated())
+
+        // .oauth2Login(
+        // oauth2 -> oauth2.defaultSuccessUrl("/swagger-ui/index.html", true));
 
         return http.build();
     }

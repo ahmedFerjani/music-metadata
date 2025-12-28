@@ -17,18 +17,49 @@ public class FileManagerServiceImpl implements FileManagerService {
     @Value("${image.storage.directory}")
     private String storageDirectory;
 
+    @Override
     public String saveImageFromUrl(String url, String name, String extension) throws IOException, URISyntaxException {
-        InputStream inputStream = new URI(url).toURL().openStream();
 
-        // Generate the full file name based on the provided name and extension
-        String fileName = name + '.' + extension;
-        File file = new File(storageDirectory, fileName);
+        // Ensure directory exists
+        File directory = getOrCreateStorageDirectory();
 
-        // Save the image file
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+        // Generate full file name
+        String fileName = name + "." + extension;
+        File file = new File(directory, fileName);
+
+        try (InputStream inputStream = new URI(url).toURL().openStream();
+                FileOutputStream outputStream = new FileOutputStream(file)) {
+
             StreamUtils.copy(inputStream, outputStream);
         }
 
         return fileName;
+    }
+
+    /**
+     * Creates the storage directory if it does not exist
+     */
+    protected File getOrCreateStorageDirectory() {
+        File directory = new File(storageDirectory);
+
+        // Check if path exists but is not a directory
+        if (directory.exists() && !directory.isDirectory()) {
+            throw new RuntimeException("Path exists but is not a directory: " + storageDirectory);
+        }
+
+        // Create directory if it doesn't exist
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                throw new RuntimeException("Failed to create storage directory: " + storageDirectory);
+            }
+        }
+
+        return directory;
+    }
+
+    // Setter for testing purposes
+    public void setStorageDirectory(String storageDirectory) {
+        this.storageDirectory = storageDirectory;
     }
 }
