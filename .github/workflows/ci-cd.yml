@@ -4,14 +4,19 @@ on: [push, pull_request]
 
 jobs:
   build:
+    runs-on: ubuntu-latest
     steps:
       - name: build
         run: echo "Building the project..."
+
   test:
+    runs-on: ubuntu-latest
     steps:
       - name: test
         run: echo "Running tests..."
+
   deploy:
+    runs-on: ubuntu-latest
     steps:
       - name: deploy
         run: echo "Deploying the project..."
