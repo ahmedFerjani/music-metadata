@@ -1,0 +1,17 @@
+name: CI/CD Pipeline
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    steps:
+      - name: build
+        run: echo "Building the project..."
+  test:
+    steps:
+      - name: test
+        run: echo "Running tests..."
+  deploy:
+    steps:
+      - name: deploy
+        run: echo "Deploying the project..."
